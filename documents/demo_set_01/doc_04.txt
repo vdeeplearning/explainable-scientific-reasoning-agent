@@ -1,0 +1,7 @@
+SYNTHETIC DEMO DATA - NOT REAL MEDICAL EVIDENCE.
+
+Study D: Preclinical mechanism synthetic mini-abstract
+
+In synthetic laboratory models of Cancer Y, Therapy X inhibited the fictional Target Q signaling pathway and reduced tumor-cell proliferation in cell cultures expressing Marker Z. Mouse xenograft experiments showed slower tumor growth after Therapy X exposure compared with vehicle control.
+
+The authors argued that the preclinical mechanism supports further investigation of Therapy X, but noted that these findings have not yet been clinically validated and cannot establish patient benefit.

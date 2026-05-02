@@ -1,0 +1,7 @@
+SYNTHETIC DEMO DATA - NOT REAL MEDICAL EVIDENCE.
+
+Study C: Biomarker subgroup synthetic mini-abstract
+
+This fictional retrospective subgroup analysis evaluated Therapy X outcomes by Marker Z status in Cancer Y. Among 41 biomarker-positive participants, Therapy X was associated with a longer median progression-free survival than comparator therapy, 8.6 months versus 4.1 months. Among 57 biomarker-negative participants, there was no meaningful difference in response or progression-free survival.
+
+The authors proposed that Therapy X may benefit only the Marker Z-positive subgroup, while warning that the subgroup analysis was retrospective and hypothesis-generating.

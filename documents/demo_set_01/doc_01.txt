@@ -1,0 +1,7 @@
+SYNTHETIC DEMO DATA - NOT REAL MEDICAL EVIDENCE.
+
+Study A: Phase 1b single-arm mini-abstract
+
+In a synthetic exploratory study of Therapy X for Cancer Y, 18 participants received Therapy X after prior standard treatment. The fictional investigators reported an objective response rate of 44%, including two complete responses and six partial responses. Median follow-up was 5.2 months, and adverse events were described as manageable in most participants.
+
+The authors concluded that Therapy X showed an encouraging early response signal in Cancer Y, but emphasized that the sample size was small, there was no control arm, and durability of response remained uncertain.

@@ -1,0 +1,7 @@
+SYNTHETIC DEMO DATA - NOT REAL MEDICAL EVIDENCE.
+
+Study B: Randomized controlled synthetic mini-abstract
+
+A fictional randomized study compared Therapy X plus standard care with standard care alone in 132 participants with Cancer Y. The synthetic trial found no statistically significant improvement in overall survival: median overall survival was 13.1 months with Therapy X and 12.8 months with standard care. Progression-free survival was numerically higher but did not meet the prespecified significance threshold.
+
+The authors stated that Therapy X did not demonstrate an overall survival benefit in the full Cancer Y population and recommended further biomarker-guided investigation rather than broad clinical adoption.
