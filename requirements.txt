@@ -1,3 +1,4 @@
+langgraph
 openai
 pypdf
 python-dotenv

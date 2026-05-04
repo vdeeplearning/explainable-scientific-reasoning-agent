@@ -39,7 +39,7 @@ load_documents
   -> final_explainable_report
 ```
 
-The workflow is implemented in plain Python with a LangGraph-style state object, so it can be ported to LangGraph later without changing the conceptual design.
+The workflow is implemented with the LangGraph library. Each reasoning step is a graph node, and the critique step uses a conditional edge to decide whether to run revision or use the draft as the final conclusion.
 
 ## Critique Loop
 
@@ -180,5 +180,5 @@ explainable-scientific-reasoning-agent/
 - richer paper ingestion with metadata, section parsing, tables, figures, and OCR for scanned PDFs
 - PubMed/arXiv retrieval
 - citation-aware evidence tracking
-- implementation with the LangGraph library
+- graph checkpointing, resume, and streaming with LangGraph
 - memory across reasoning sessions
