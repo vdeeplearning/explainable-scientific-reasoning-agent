@@ -4,6 +4,10 @@ A Python 3.11+ CLI and desktop GUI demo for multi-document scientific reasoning 
 
 The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` or `.pdf` documents and inspect what the agent thinks at each intermediate step.
 
+## GUI Preview
+
+![Explainable Scientific Reasoning Agent GUI](Screenshot_AAA.png)
+
 ## Disclaimer
 
 All included documents are synthetic demo data about a fictional oncology treatment called Therapy X for fictional Cancer Y. They are not real medical or scientific evidence. This project is for software demonstration only and is not medical, scientific, clinical, or research advice.
