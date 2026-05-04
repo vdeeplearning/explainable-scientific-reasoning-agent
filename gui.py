@@ -57,7 +57,7 @@ class ReasoningAgentApp(tk.Tk):
 
         content = ttk.Frame(container)
         content.pack(fill=tk.BOTH, expand=True)
-        content.columnconfigure(0, weight=0, minsize=330)
+        content.columnconfigure(0, weight=0, minsize=380)
         content.columnconfigure(1, weight=1)
         content.rowconfigure(0, weight=1)
 
@@ -86,7 +86,7 @@ class ReasoningAgentApp(tk.Tk):
         ).pack(anchor=tk.W, pady=(0, 14))
 
         ttk.Label(sidebar, text="Documents", style="Subtle.TLabel").pack(anchor=tk.W)
-        self.file_list = tk.Listbox(sidebar, height=12, activestyle="dotbox", font=("Segoe UI", 10))
+        self.file_list = tk.Listbox(sidebar, height=8, activestyle="dotbox", font=("Segoe UI", 10))
         self.file_list.bind("<<ListboxSelect>>", self._show_selected_document_text)
         self.file_list.pack(fill=tk.BOTH, expand=False, pady=(4, 10))
 
@@ -112,14 +112,27 @@ class ReasoningAgentApp(tk.Tk):
         self.run_button.pack(fill=tk.X)
 
         self.status_var = tk.StringVar(value="Ready")
-        ttk.Label(sidebar, textvariable=self.status_var, style="Subtle.TLabel").pack(anchor=tk.W, pady=(12, 0))
+        self.status_label = ttk.Label(
+            sidebar,
+            textvariable=self.status_var,
+            style="Subtle.TLabel",
+            wraplength=340,
+            justify=tk.LEFT,
+        )
+        self.status_label.pack(fill=tk.X, pady=(12, 0))
 
         disclaimer = (
             "Demo documents are synthetic. Uploaded content is analyzed only as user-provided text. "
             "This tool does not provide medical or scientific advice."
         )
-        disclaimer_label = ttk.Label(sidebar, text=disclaimer, style="Subtle.TLabel", wraplength=300)
-        disclaimer_label.pack(anchor=tk.W, pady=(18, 0))
+        disclaimer_label = ttk.Label(
+            sidebar,
+            text=disclaimer,
+            style="Subtle.TLabel",
+            wraplength=340,
+            justify=tk.LEFT,
+        )
+        disclaimer_label.pack(fill=tk.X, pady=(14, 0))
 
     def _build_results_area(self, parent: ttk.Frame) -> None:
         right = ttk.Frame(parent)
@@ -277,7 +290,7 @@ class ReasoningAgentApp(tk.Tk):
         else:
             self.current_state = payload["state"]
             self._render_state(self.current_state)
-            self.status_var.set(f"Saved report to {payload['output_path']}")
+            self.status_var.set(f"Report saved: {payload['output_path']}")
         self.after(100, self._poll_result_queue)
 
     def _set_all_views(self, text: str) -> None:
