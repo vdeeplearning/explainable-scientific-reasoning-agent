@@ -1,8 +1,8 @@
 # Explainable Scientific Reasoning Agent
 
-A Python 3.11+ CLI demo for multi-document scientific reasoning over synthetic oncology abstracts.
+A Python 3.11+ CLI and desktop GUI demo for multi-document scientific reasoning over scientific text snippets.
 
-The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report.
+The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` documents and inspect what the agent thinks at each intermediate step.
 
 ## Disclaimer
 
@@ -88,6 +88,22 @@ If no API key is present, the project falls back to deterministic local mock out
 
 ## Run
 
+Launch the GUI:
+
+```bash
+python gui.py
+```
+
+In the GUI, you can:
+
+- add your own `.txt` documents
+- fall back to the built-in synthetic demo set
+- edit the scientific question
+- run the reasoning workflow
+- inspect document-level agent thoughts, extracted claims, evidence comparison, draft, critique, revision, and raw JSON
+
+Run the CLI:
+
 ```bash
 python main.py --question "Does Therapy X show convincing evidence of benefit in Cancer Y?"
 ```
@@ -135,6 +151,7 @@ explainable-scientific-reasoning-agent/
     reporter.py
     workflow.py
   outputs/
+  gui.py
   main.py
   requirements.txt
   README.md

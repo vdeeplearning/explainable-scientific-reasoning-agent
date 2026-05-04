@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from agent.claim_extractor import extract_claims
@@ -20,6 +21,7 @@ def initial_state(question: str = DEFAULT_QUESTION) -> dict[str, Any]:
     return {
         "question": question,
         "documents": [],
+        "document_insights": [],
         "claims": [],
         "evidence_for": [],
         "evidence_against": [],
@@ -33,10 +35,13 @@ def initial_state(question: str = DEFAULT_QUESTION) -> dict[str, Any]:
     }
 
 
-def run_workflow(question: str = DEFAULT_QUESTION) -> dict[str, Any]:
+def run_workflow(
+    question: str = DEFAULT_QUESTION,
+    document_paths: list[Path | str] | None = None,
+) -> dict[str, Any]:
     state = initial_state(question)
 
-    state = load_documents(state)
+    state = load_documents(state, file_paths=document_paths)
     state = extract_claims(state)
     state = compare_evidence(state)
     state = draft_conclusion(state)

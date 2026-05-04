@@ -27,6 +27,7 @@ def _fallback_report(state: dict[str, Any]) -> dict[str, Any]:
         "confidence": state.get("confidence", "low"),
         "evidence_for": state.get("evidence_for", []),
         "evidence_against": state.get("evidence_against", []),
+        "document_insights": state.get("document_insights", []),
         "conflicts_detected": state.get("conflicts", []),
         "uncertainty_sources": state.get("uncertainty_sources", []),
         "critique_of_initial_answer": state.get("critique", {}),

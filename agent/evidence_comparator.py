@@ -37,11 +37,7 @@ def compare_evidence(state: dict[str, Any]) -> dict[str, Any]:
         if limitation:
             uncertainty_sources.append(f"{source}: {limitation}")
 
-    conflicts = [
-        "Early response signal conflicts with lack of overall survival benefit in the randomized full-population study.",
-        "Biomarker-positive subgroup benefit conflicts with no meaningful benefit in biomarker-negative patients.",
-        "Preclinical mechanism supports plausibility but conflicts with the absence of definitive clinical validation.",
-    ]
+    conflicts = _detect_conflicts(state.get("claims", []))
 
     state["evidence_for"] = evidence_for
     state["evidence_against"] = evidence_against
@@ -56,3 +52,27 @@ def _why_support_matters(claim_type: str) -> str:
     if claim_type == "mechanistic":
         return "Provides biological plausibility but does not establish clinical effectiveness."
     return "Shows an early efficacy signal that warrants comparison against stronger studies."
+
+
+def _detect_conflicts(claims: list[dict[str, Any]]) -> list[str]:
+    claim_types = {claim.get("claim_type", "") for claim in claims}
+    conflicts = []
+    if "supportive" in claim_types and "opposing" in claim_types:
+        conflicts.append(
+            "Supportive evidence appears alongside opposing evidence, so the conclusion should avoid a one-sided interpretation."
+        )
+    if "conditional" in claim_types and "supportive" in claim_types:
+        conflicts.append(
+            "Some evidence suggests a conditional or subgroup-specific effect, which may limit broad claims of benefit."
+        )
+    if "mechanistic" in claim_types and ("supportive" in claim_types or "opposing" in claim_types):
+        conflicts.append(
+            "Mechanistic or preclinical evidence supports plausibility but does not resolve the clinical evidence question."
+        )
+
+    if not conflicts and len(claims) > 1:
+        conflicts.append(
+            "Multiple documents contribute different claims; reviewers should compare study design, population, and limitations before drawing a firm conclusion."
+        )
+
+    return conflicts
