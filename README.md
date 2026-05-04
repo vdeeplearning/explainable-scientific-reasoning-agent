@@ -100,7 +100,8 @@ In the GUI, you can:
 
 - add your own `.txt` documents
 - add PDFs with extractable text
-- fall back to the built-in synthetic demo set
+- run the built-in revision-needed demo
+- run the built-in no-revision-needed demo
 - edit the scientific question
 - enter an OpenAI API key for live LLM-backed reasoning
 - preview uploaded or extracted document text
@@ -147,6 +148,8 @@ explainable-scientific-reasoning-agent/
       doc_02.txt
       doc_03.txt
       doc_04.txt
+    demo_set_02_no_revision/
+      demo_no_revision_01.txt
   agent/
     __init__.py
     loader.py

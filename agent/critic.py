@@ -10,30 +10,68 @@ from agent.llm import call_openai_json
 
 def _local_critique(state: dict[str, Any]) -> dict[str, Any]:
     draft = state.get("draft_conclusion", "").lower()
+    evidence_against = state.get("evidence_against", [])
+    conflicts = state.get("conflicts", [])
+    uncertainty_sources = state.get("uncertainty_sources", [])
+    claims = state.get("claims", [])
     critique = {
         "overclaims": [],
         "missing_evidence": [],
         "ignored_conflicts": [],
         "revision_needed": False,
     }
+    draft_terms = _important_terms(draft)
 
-    if "convincing" in draft or "strong" in draft or "broad clinical adoption" in draft:
-        critique["overclaims"].append("Draft may overstate evidence despite no overall survival benefit.")
-    if "overall survival" not in draft:
-        critique["missing_evidence"].append("Draft should mention the randomized study found no overall survival benefit.")
-    if "small" not in draft and "sample" not in draft:
-        critique["missing_evidence"].append("Draft should mention the small single-arm sample size limitation.")
-    if "marker z" not in draft and "biomarker" not in draft and "subgroup" not in draft:
+    mixed_evidence = bool(evidence_against or conflicts)
+    if mixed_evidence and any(term in draft for term in ("convincing", "strong", "established", "definitive")):
+        critique["overclaims"].append("Draft may overstate evidence despite opposing or conflicting findings.")
+    if evidence_against and not any(_important_terms(item.get("claim", "")) & draft_terms for item in evidence_against):
+        critique["missing_evidence"].append("Draft should mention the main evidence against the conclusion.")
+    if _has_uncertainty_term(uncertainty_sources, ("small", "sample")) and "small" not in draft and "sample" not in draft:
+        critique["missing_evidence"].append("Draft should mention the small sample size limitation.")
+    if _has_uncertainty_term(uncertainty_sources, ("retrospective", "hypothesis-generating")) and "retrospective" not in draft:
+        critique["missing_evidence"].append("Draft should mention retrospective or hypothesis-generating limitations.")
+    if _has_conditional_claim(claims) and not any(term in draft for term in ("marker", "biomarker", "subgroup", "conditional")):
         critique["missing_evidence"].append("Draft should mention that evidence may be subgroup-specific.")
-    if "conflict" not in draft and state.get("conflicts"):
+    if conflicts and "conflict" not in draft:
         critique["ignored_conflicts"].append("Draft does not explicitly acknowledge conflicts across studies.")
-    if state.get("draft_confidence") in {"moderate", "high"}:
-        critique["overclaims"].append("Confidence may be too high for mixed synthetic evidence.")
+    if mixed_evidence and state.get("draft_confidence") in {"moderate", "high"}:
+        critique["overclaims"].append("Confidence may be too high for mixed evidence.")
 
     critique["revision_needed"] = any(
         critique[key] for key in ("overclaims", "missing_evidence", "ignored_conflicts")
     )
     return critique
+
+
+def _important_terms(text: str) -> set[str]:
+    stop_words = {
+        "a",
+        "an",
+        "and",
+        "are",
+        "as",
+        "did",
+        "for",
+        "in",
+        "is",
+        "not",
+        "of",
+        "or",
+        "the",
+        "to",
+        "with",
+    }
+    return {word.strip(".,:;()[]").lower() for word in text.split() if len(word) > 5 and word.lower() not in stop_words}
+
+
+def _has_uncertainty_term(uncertainty_sources: list[str], terms: tuple[str, ...]) -> bool:
+    joined = " ".join(uncertainty_sources).lower()
+    return any(term in joined for term in terms)
+
+
+def _has_conditional_claim(claims: list[dict[str, Any]]) -> bool:
+    return any(claim.get("claim_type") == "conditional" for claim in claims)
 
 
 def critique_conclusion(state: dict[str, Any]) -> dict[str, Any]:

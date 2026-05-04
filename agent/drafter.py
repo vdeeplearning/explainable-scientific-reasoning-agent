@@ -9,15 +9,52 @@ from agent.llm import call_openai_json
 
 
 def _fallback_draft(state: dict[str, Any]) -> dict[str, str]:
+    question = state.get("question", "the question")
+    evidence_for = state.get("evidence_for", [])
+    evidence_against = state.get("evidence_against", [])
+    conflicts = state.get("conflicts", [])
+    uncertainty_sources = state.get("uncertainty_sources", [])
+
+    if evidence_against or conflicts:
+        supporting = _join_claims(evidence_for)
+        opposing = _join_claims(evidence_against)
+        return {
+            "draft_conclusion": (
+                f"For the question '{question}', the evidence is mixed. Supporting evidence includes: "
+                f"{supporting}. Evidence against includes: {opposing}. The conclusion should remain cautious "
+                "because several limitations or unresolved issues are present."
+            ),
+            "confidence": "low",
+        }
+
+    if evidence_for:
+        supporting = _join_claims(evidence_for)
+        limitation_text = (
+            f" Remaining limitations include: {'; '.join(uncertainty_sources)}"
+            if uncertainty_sources
+            else " No major limitations were detected by the local fallback."
+        )
+        return {
+            "draft_conclusion": (
+                f"For the question '{question}', the available documents support a moderate-confidence conclusion. "
+                f"The main supporting evidence is: {supporting}.{limitation_text}"
+            ),
+            "confidence": "moderate",
+        }
+
     return {
         "draft_conclusion": (
-            "Therapy X shows some evidence of benefit in Cancer Y, including an early response signal, "
-            "subgroup benefit in Marker Z-positive patients, and preclinical support. However, the evidence "
-            "is not yet convincing for the overall Cancer Y population because a randomized study found no "
-            "overall survival benefit and several findings remain limited or hypothesis-generating."
+            f"For the question '{question}', the available documents do not provide enough extracted evidence "
+            "to support a confident conclusion."
         ),
         "confidence": "low",
     }
+
+
+def _join_claims(items: list[dict[str, Any]]) -> str:
+    if not items:
+        return "none identified"
+    return "; ".join(f"{item.get('source', 'unknown')}: {item.get('claim', '')}" for item in items)
 
 
 def draft_conclusion(state: dict[str, Any]) -> dict[str, Any]:

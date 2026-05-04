@@ -1,0 +1,7 @@
+SYNTHETIC DEMO DATA - NOT REAL MEDICAL EVIDENCE.
+
+Study E: Consistent synthetic validation mini-abstract
+
+In a fictional prospective validation study of Therapy Z for Condition Q, 96 participants were evaluated with a predefined response endpoint. Therapy Z was associated with improved response compared with comparator care, and the result met the prespecified statistical threshold. Follow-up assessment reported that the response pattern was consistent across the full evaluated cohort.
+
+The authors concluded that this synthetic study supports a moderate-confidence finding for Therapy Z on the predefined response endpoint while noting that independent replication would still be useful.

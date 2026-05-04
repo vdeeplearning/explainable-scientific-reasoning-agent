@@ -29,7 +29,7 @@ class ReasoningAgentApp(tk.Tk):
 
         self._configure_style()
         self._build_layout()
-        self._load_demo_documents()
+        self._load_revision_demo_documents()
         self.after(100, self._poll_result_queue)
 
     def _configure_style(self) -> None:
@@ -92,7 +92,14 @@ class ReasoningAgentApp(tk.Tk):
         button_row = ttk.Frame(sidebar)
         button_row.pack(fill=tk.X, pady=(0, 8))
         ttk.Button(button_row, text="Add Files", command=self._add_files).pack(side=tk.LEFT)
-        ttk.Button(button_row, text="Use Demo", command=self._load_demo_documents).pack(side=tk.LEFT, padx=(8, 0))
+
+        demo_row = ttk.Frame(sidebar)
+        demo_row.pack(fill=tk.X, pady=(0, 8))
+        ttk.Button(demo_row, text="Demo: Revision", command=self._load_revision_demo_documents).pack(side=tk.LEFT)
+        ttk.Button(demo_row, text="Demo: No Revision", command=self._load_no_revision_demo_documents).pack(
+            side=tk.LEFT,
+            padx=(8, 0),
+        )
 
         ttk.Button(sidebar, text="Clear", command=self._clear_files).pack(fill=tk.X, pady=(0, 12))
         self.run_button = ttk.Button(
@@ -149,8 +156,16 @@ class ReasoningAgentApp(tk.Tk):
     def _toggle_api_key_visibility(self) -> None:
         self.api_key_entry.configure(show="" if self.show_key_var.get() else "*")
 
-    def _load_demo_documents(self) -> None:
+    def _load_revision_demo_documents(self) -> None:
         self.selected_files = sorted(Path("documents/demo_set_01").glob("*.txt"))
+        self.question_text.delete("1.0", tk.END)
+        self.question_text.insert("1.0", DEFAULT_QUESTION)
+        self._refresh_file_list()
+
+    def _load_no_revision_demo_documents(self) -> None:
+        self.selected_files = sorted(Path("documents/demo_set_02_no_revision").glob("*.txt"))
+        self.question_text.delete("1.0", tk.END)
+        self.question_text.insert("1.0", "Does Therapy Z show consistent evidence on the predefined endpoint in Condition Q?")
         self._refresh_file_list()
 
     def _add_files(self) -> None:
