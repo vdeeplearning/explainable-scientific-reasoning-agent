@@ -177,8 +177,8 @@ explainable-scientific-reasoning-agent/
 
 ## Future Extensions
 
-- real paper ingestion
+- richer paper ingestion with metadata, section parsing, tables, figures, and OCR for scanned PDFs
 - PubMed/arXiv retrieval
 - citation-aware evidence tracking
-- LangGraph implementation
+- implementation with the LangGraph library
 - memory across reasoning sessions
