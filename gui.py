@@ -334,7 +334,7 @@ class ReasoningAgentApp(tk.Tk):
             "",
             f"Confidence: {state.get('confidence', report.get('confidence', 'low'))}",
             "",
-            f"Revision needed: {state.get('revision_needed', False)}",
+            f"Revised: {state.get('revision_needed', False)}",
         ]
         return "\n".join(lines)
 
