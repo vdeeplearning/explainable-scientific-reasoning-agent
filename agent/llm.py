@@ -16,6 +16,8 @@ if load_dotenv:
 
 
 def has_api_key() -> bool:
+    if os.getenv("FORCE_LOCAL_LLM") == "1":
+        return False
     return bool(os.getenv("OPENAI_API_KEY"))
 
 

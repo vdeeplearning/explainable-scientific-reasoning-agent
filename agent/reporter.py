@@ -61,6 +61,11 @@ def final_explainable_report(state: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(result, dict):
         result = fallback
 
+    result["question"] = fallback["question"]
+    result["final_conclusion"] = fallback["final_conclusion"]
+    result["confidence"] = fallback["confidence"]
+    result["critique_of_initial_answer"] = fallback["critique_of_initial_answer"]
+    result["audit_trail"] = fallback["audit_trail"]
     result.setdefault("demo_data_notice", fallback["demo_data_notice"])
     state["explainability_report"] = result
     return state

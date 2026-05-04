@@ -110,6 +110,8 @@ In the GUI, you can:
 
 PDF support uses `pypdf` to extract embedded text. Scanned image-only PDFs may show no extractable text and are a good candidate for a future OCR extension.
 
+The no-revision demo runs in deterministic demo mode so it consistently demonstrates the `revision_needed = false` branch even if an API key is entered.
+
 Run the CLI:
 
 ```bash

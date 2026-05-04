@@ -24,6 +24,7 @@ class ReasoningAgentApp(tk.Tk):
         self.minsize(980, 640)
 
         self.selected_files: list[Path] = []
+        self.demo_mode = "revision"
         self.result_queue: queue.Queue[tuple[str, Any]] = queue.Queue()
         self.current_state: dict[str, Any] | None = None
 
@@ -157,12 +158,14 @@ class ReasoningAgentApp(tk.Tk):
         self.api_key_entry.configure(show="" if self.show_key_var.get() else "*")
 
     def _load_revision_demo_documents(self) -> None:
+        self.demo_mode = "revision"
         self.selected_files = sorted(Path("documents/demo_set_01").glob("*.txt"))
         self.question_text.delete("1.0", tk.END)
         self.question_text.insert("1.0", DEFAULT_QUESTION)
         self._refresh_file_list()
 
     def _load_no_revision_demo_documents(self) -> None:
+        self.demo_mode = "no_revision"
         self.selected_files = sorted(Path("documents/demo_set_02_no_revision").glob("*.txt"))
         self.question_text.delete("1.0", tk.END)
         self.question_text.insert("1.0", "Does Therapy Z show consistent evidence on the predefined endpoint in Condition Q?")
@@ -180,9 +183,11 @@ class ReasoningAgentApp(tk.Tk):
             path = Path(file_name)
             if path.resolve() not in existing:
                 self.selected_files.append(path)
+        self.demo_mode = "custom"
         self._refresh_file_list()
 
     def _clear_files(self) -> None:
+        self.demo_mode = "custom"
         self.selected_files = []
         self._refresh_file_list()
 
@@ -229,13 +234,19 @@ class ReasoningAgentApp(tk.Tk):
             return
 
         api_key = self.api_key_var.get().strip()
-        if api_key:
+        force_local_demo = self.demo_mode == "no_revision"
+        if force_local_demo:
+            os.environ["FORCE_LOCAL_LLM"] = "1"
+            os.environ.pop("OPENAI_API_KEY", None)
+        elif api_key:
+            os.environ.pop("FORCE_LOCAL_LLM", None)
             os.environ["OPENAI_API_KEY"] = api_key
         else:
+            os.environ.pop("FORCE_LOCAL_LLM", None)
             os.environ.pop("OPENAI_API_KEY", None)
 
         self.run_button.configure(state=tk.DISABLED)
-        mode = "OpenAI API" if api_key else "local fallback"
+        mode = "deterministic demo fallback" if force_local_demo else ("OpenAI API" if api_key else "local fallback")
         self.status_var.set(f"Running workflow with {mode}...")
         self._set_all_views("Running. The agent is loading documents and building the reasoning state...")
 
@@ -283,7 +294,7 @@ class ReasoningAgentApp(tk.Tk):
 
     def _render_state(self, state: dict[str, Any]) -> None:
         report = state.get("explainability_report", {})
-        self._replace_text(self.summary_view, self._format_summary(report))
+        self._replace_text(self.summary_view, self._format_summary(state))
         self._replace_text(self.uploaded_text_view, self._format_uploaded_documents(state))
         self._replace_text(self.documents_view, self._format_document_thoughts(state))
         self._replace_text(self.claims_view, self._format_claims(state))
@@ -299,15 +310,16 @@ class ReasoningAgentApp(tk.Tk):
         widget.insert("1.0", content)
         widget.configure(state=tk.DISABLED)
 
-    def _format_summary(self, report: dict[str, Any]) -> str:
+    def _format_summary(self, state: dict[str, Any]) -> str:
+        report = state.get("explainability_report", {})
         lines = [
             "Final conclusion",
             "================",
-            report.get("final_conclusion", ""),
+            state.get("final_conclusion", report.get("final_conclusion", "")),
             "",
-            f"Confidence: {report.get('confidence', 'low')}",
+            f"Confidence: {state.get('confidence', report.get('confidence', 'low'))}",
             "",
-            f"Revision needed: {report.get('critique_of_initial_answer', {}).get('revision_needed', False)}",
+            f"Revision needed: {state.get('revision_needed', False)}",
         ]
         return "\n".join(lines)
 
