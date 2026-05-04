@@ -86,6 +86,8 @@ OPENAI_API_KEY=your_api_key_here
 
 If no API key is present, the project falls back to deterministic local mock outputs so the demo still runs.
 
+You can also enter an OpenAI API key directly in the GUI. Keys entered in the GUI are used for the current app session and are not written to `.env`.
+
 ## Run
 
 Launch the GUI:
@@ -100,6 +102,7 @@ In the GUI, you can:
 - add PDFs with extractable text
 - fall back to the built-in synthetic demo set
 - edit the scientific question
+- enter an OpenAI API key for live LLM-backed reasoning
 - preview uploaded or extracted document text
 - run the reasoning workflow
 - inspect document-level agent thoughts, extracted claims, evidence comparison, draft, critique, revision, and raw JSON

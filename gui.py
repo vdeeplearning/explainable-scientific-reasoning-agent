@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import queue
 import threading
 import tkinter as tk
@@ -71,6 +72,18 @@ class ReasoningAgentApp(tk.Tk):
         self.question_text.pack(fill=tk.X, pady=(4, 14))
         self.question_text.insert("1.0", DEFAULT_QUESTION)
 
+        ttk.Label(sidebar, text="OpenAI API Key", style="Subtle.TLabel").pack(anchor=tk.W)
+        self.api_key_var = tk.StringVar(value=os.getenv("OPENAI_API_KEY", ""))
+        self.api_key_entry = ttk.Entry(sidebar, textvariable=self.api_key_var, show="*")
+        self.api_key_entry.pack(fill=tk.X, pady=(4, 6))
+        self.show_key_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            sidebar,
+            text="Show key",
+            variable=self.show_key_var,
+            command=self._toggle_api_key_visibility,
+        ).pack(anchor=tk.W, pady=(0, 14))
+
         ttk.Label(sidebar, text="Documents", style="Subtle.TLabel").pack(anchor=tk.W)
         self.file_list = tk.Listbox(sidebar, height=12, activestyle="dotbox", font=("Segoe UI", 10))
         self.file_list.bind("<<ListboxSelect>>", self._show_selected_document_text)
@@ -132,6 +145,9 @@ class ReasoningAgentApp(tk.Tk):
 
         self.tabs.add(frame, text=title)
         return text
+
+    def _toggle_api_key_visibility(self) -> None:
+        self.api_key_entry.configure(show="" if self.show_key_var.get() else "*")
 
     def _load_demo_documents(self) -> None:
         self.selected_files = sorted(Path("documents/demo_set_01").glob("*.txt"))
@@ -197,8 +213,15 @@ class ReasoningAgentApp(tk.Tk):
             messagebox.showwarning("No documents", "Add at least one text or PDF document before running.")
             return
 
+        api_key = self.api_key_var.get().strip()
+        if api_key:
+            os.environ["OPENAI_API_KEY"] = api_key
+        else:
+            os.environ.pop("OPENAI_API_KEY", None)
+
         self.run_button.configure(state=tk.DISABLED)
-        self.status_var.set("Running workflow...")
+        mode = "OpenAI API" if api_key else "local fallback"
+        self.status_var.set(f"Running workflow with {mode}...")
         self._set_all_views("Running. The agent is loading documents and building the reasoning state...")
 
         thread = threading.Thread(target=self._run_in_background, args=(question, list(self.selected_files)), daemon=True)
