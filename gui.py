@@ -102,7 +102,7 @@ class ReasoningAgentApp(tk.Tk):
             padx=(8, 0),
         )
 
-        ttk.Button(sidebar, text="Clear", command=self._clear_files).pack(fill=tk.X, pady=(0, 12))
+        ttk.Button(sidebar, text="Clear Documents", command=self._clear_files).pack(fill=tk.X, pady=(0, 12))
         self.run_button = ttk.Button(
             sidebar,
             text="Run Reasoning",
@@ -189,7 +189,9 @@ class ReasoningAgentApp(tk.Tk):
     def _clear_files(self) -> None:
         self.demo_mode = "custom"
         self.selected_files = []
+        self.current_state = None
         self._refresh_file_list()
+        self._set_all_views("No documents loaded. Add files or choose a demo set, then run the workflow.")
 
     def _refresh_file_list(self) -> None:
         self.file_list.delete(0, tk.END)
