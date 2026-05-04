@@ -100,6 +100,7 @@ In the GUI, you can:
 - add PDFs with extractable text
 - fall back to the built-in synthetic demo set
 - edit the scientific question
+- preview uploaded or extracted document text
 - run the reasoning workflow
 - inspect document-level agent thoughts, extracted claims, evidence comparison, draft, critique, revision, and raw JSON
 

@@ -10,6 +10,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 from typing import Any
 
+from agent.loader import read_document_text
 from agent.reporter import save_report
 from agent.workflow import DEFAULT_QUESTION, run_workflow
 
@@ -72,6 +73,7 @@ class ReasoningAgentApp(tk.Tk):
 
         ttk.Label(sidebar, text="Documents", style="Subtle.TLabel").pack(anchor=tk.W)
         self.file_list = tk.Listbox(sidebar, height=12, activestyle="dotbox", font=("Segoe UI", 10))
+        self.file_list.bind("<<ListboxSelect>>", self._show_selected_document_text)
         self.file_list.pack(fill=tk.BOTH, expand=False, pady=(4, 10))
 
         button_row = ttk.Frame(sidebar)
@@ -108,6 +110,7 @@ class ReasoningAgentApp(tk.Tk):
         self.tabs.grid(row=0, column=0, sticky="nsew")
 
         self.summary_view = self._add_text_tab("Final Report")
+        self.uploaded_text_view = self._add_text_tab("Uploaded Text")
         self.documents_view = self._add_text_tab("Document Thoughts")
         self.claims_view = self._add_text_tab("Claims")
         self.comparison_view = self._add_text_tab("Evidence Comparison")
@@ -157,6 +160,36 @@ class ReasoningAgentApp(tk.Tk):
         for path in self.selected_files:
             self.file_list.insert(tk.END, path.name)
         self.status_var.set(f"{len(self.selected_files)} document(s) selected")
+        if self.selected_files:
+            self.file_list.selection_clear(0, tk.END)
+            self.file_list.selection_set(0)
+            self.file_list.activate(0)
+            self._show_document_text(self.selected_files[0])
+        else:
+            self._replace_text(self.uploaded_text_view, "No document selected.")
+
+    def _show_selected_document_text(self, _event: tk.Event | None = None) -> None:
+        selection = self.file_list.curselection()
+        if not selection:
+            return
+        index = selection[0]
+        if index >= len(self.selected_files):
+            return
+        self._show_document_text(self.selected_files[index])
+
+    def _show_document_text(self, path: Path) -> None:
+        try:
+            text = read_document_text(path)
+        except Exception as exc:
+            text = f"Could not preview {path.name}.\n\n{exc}"
+
+        preview = [
+            f"Source: {path.name}",
+            f"Path: {path}",
+            "",
+            text or "[No text found.]",
+        ]
+        self._replace_text(self.uploaded_text_view, "\n".join(preview))
 
     def _run_reasoning(self) -> None:
         question = self.question_text.get("1.0", tk.END).strip() or DEFAULT_QUESTION
@@ -199,6 +232,7 @@ class ReasoningAgentApp(tk.Tk):
     def _set_all_views(self, text: str) -> None:
         for widget in (
             self.summary_view,
+            self.uploaded_text_view,
             self.documents_view,
             self.claims_view,
             self.comparison_view,
@@ -212,6 +246,7 @@ class ReasoningAgentApp(tk.Tk):
     def _render_state(self, state: dict[str, Any]) -> None:
         report = state.get("explainability_report", {})
         self._replace_text(self.summary_view, self._format_summary(report))
+        self._replace_text(self.uploaded_text_view, self._format_uploaded_documents(state))
         self._replace_text(self.documents_view, self._format_document_thoughts(state))
         self._replace_text(self.claims_view, self._format_claims(state))
         self._replace_text(self.comparison_view, self._format_comparison(state))
@@ -248,6 +283,17 @@ class ReasoningAgentApp(tk.Tk):
                 sections.append(f"    Limitation: {claim.get('limitation', '')}")
             sections.append("")
         return "\n".join(sections).strip() or "No document insights available."
+
+    def _format_uploaded_documents(self, state: dict[str, Any]) -> str:
+        sections = []
+        for document in state.get("documents", []):
+            sections.append(f"Source: {document.get('source', '')}")
+            sections.append(f"Path: {document.get('path', '')}")
+            sections.append(f"Type: {document.get('file_type', 'txt')}")
+            sections.append("")
+            sections.append(document.get("text", "") or "[No text found.]")
+            sections.append("\n" + "=" * 80 + "\n")
+        return "\n".join(sections).strip() or "No uploaded text available."
 
     def _format_claims(self, state: dict[str, Any]) -> str:
         lines = []
