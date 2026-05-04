@@ -88,7 +88,21 @@ def _heuristic_claim(document: dict[str, Any]) -> dict[str, str]:
 
 
 def _first_sentence(text: str) -> str:
-    cleaned = " ".join(text.split())
+    meaningful_lines = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        lower_line = stripped.lower()
+        if lower_line.startswith("synthetic demo data"):
+            continue
+        if lower_line.startswith("study ") and stripped.endswith("abstract"):
+            continue
+        meaningful_lines.append(stripped)
+
+    cleaned = " ".join(meaningful_lines).strip()
+    if not cleaned:
+        cleaned = " ".join(text.split())
     if not cleaned:
         return ""
     for delimiter in (". ", "? ", "! "):
