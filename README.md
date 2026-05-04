@@ -2,7 +2,7 @@
 
 A Python 3.11+ CLI and desktop GUI demo for multi-document scientific reasoning over scientific text snippets.
 
-The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` documents and inspect what the agent thinks at each intermediate step.
+The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` or `.pdf` documents and inspect what the agent thinks at each intermediate step.
 
 ## Disclaimer
 
@@ -97,10 +97,13 @@ python gui.py
 In the GUI, you can:
 
 - add your own `.txt` documents
+- add PDFs with extractable text
 - fall back to the built-in synthetic demo set
 - edit the scientific question
 - run the reasoning workflow
 - inspect document-level agent thoughts, extracted claims, evidence comparison, draft, critique, revision, and raw JSON
+
+PDF support uses `pypdf` to extract embedded text. Scanned image-only PDFs may show no extractable text and are a good candidate for a future OCR extension.
 
 Run the CLI:
 

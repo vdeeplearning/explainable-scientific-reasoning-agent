@@ -48,7 +48,7 @@ class ReasoningAgentApp(tk.Tk):
         ttk.Label(header, text="Explainable Scientific Reasoning Agent", style="Header.TLabel").pack(anchor=tk.W)
         ttk.Label(
             header,
-            text="Upload scientific snippets, run the reasoning loop, and inspect the intermediate agent state.",
+            text="Upload scientific text or PDF snippets, run the reasoning loop, and inspect the intermediate agent state.",
             style="Subtle.TLabel",
         ).pack(anchor=tk.W, pady=(4, 12))
 
@@ -136,8 +136,8 @@ class ReasoningAgentApp(tk.Tk):
 
     def _add_files(self) -> None:
         files = filedialog.askopenfilenames(
-            title="Choose text documents",
-            filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            title="Choose scientific documents",
+            filetypes=[("Supported documents", "*.txt *.pdf"), ("Text files", "*.txt"), ("PDF files", "*.pdf")],
         )
         if not files:
             return
@@ -161,7 +161,7 @@ class ReasoningAgentApp(tk.Tk):
     def _run_reasoning(self) -> None:
         question = self.question_text.get("1.0", tk.END).strip() or DEFAULT_QUESTION
         if not self.selected_files:
-            messagebox.showwarning("No documents", "Add at least one text document before running.")
+            messagebox.showwarning("No documents", "Add at least one text or PDF document before running.")
             return
 
         self.run_button.configure(state=tk.DISABLED)
