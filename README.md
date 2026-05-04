@@ -1,8 +1,8 @@
 # Explainable Scientific Reasoning Agent
 
-A Python 3.11+ CLI and desktop GUI demo for multi-document scientific reasoning over scientific text snippets.
+A Python 3.11+ CLI and desktop GUI demo for multi-document scientific reasoning over scientific documents.
 
-The project reads several short scientific document snippets, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` or `.pdf` documents and inspect what the agent thinks at each intermediate step.
+The project reads scientific documents, extracts key claims, compares evidence across documents, detects conflicts, tracks uncertainty, drafts a conclusion, critiques that conclusion, revises it when needed, and produces an explainable JSON report. The GUI lets users upload their own `.txt` or `.pdf` documents and inspect what the agent thinks at each intermediate step.
 
 ## GUI Preview
 
@@ -14,7 +14,7 @@ All included documents are synthetic demo data about a fictional oncology treatm
 
 ## Why This Is Different From RAG
 
-This is not a generic retrieval-augmented generation chatbot. The demo does not simply retrieve snippets and ask a model to answer from them. Instead, it makes the reasoning process explicit:
+This is not a generic retrieval-augmented generation chatbot. The demo does not simply retrieve document text and ask a model to answer from it. Instead, it makes the reasoning process explicit:
 
 - extracts claims from each document
 - separates evidence for and against the question

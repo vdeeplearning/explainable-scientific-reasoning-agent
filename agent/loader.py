@@ -1,4 +1,4 @@
-"""Document loading for scientific snippets."""
+"""Document loading for scientific documents."""
 
 from __future__ import annotations
 

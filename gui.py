@@ -51,7 +51,7 @@ class ReasoningAgentApp(tk.Tk):
         ttk.Label(header, text="Explainable Scientific Reasoning Agent", style="Header.TLabel").pack(anchor=tk.W)
         ttk.Label(
             header,
-            text="Upload scientific text or PDF snippets, run the reasoning loop, and inspect the intermediate agent state.",
+            text="Upload scientific documents, run the reasoning loop, and inspect the intermediate agent state.",
             style="Subtle.TLabel",
         ).pack(anchor=tk.W, pady=(4, 12))
 
